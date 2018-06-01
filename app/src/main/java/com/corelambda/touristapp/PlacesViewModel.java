@@ -2,6 +2,8 @@ package com.corelambda.touristapp;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
+import android.support.annotation.NonNull;
 
 import com.corelambda.touristapp.datamodel.WikipediaPage;
 
@@ -12,9 +14,9 @@ public class PlacesViewModel extends ViewModel {
     private LiveData<List<WikipediaPage>> touristSitesData;
     private PlacesRepository placesRepository;
 
-    public PlacesViewModel() {
+    public PlacesViewModel(PlacesRepository repo) {
 
-        placesRepository = new PlacesRepository();
+        placesRepository = repo;
         touristSitesData = placesRepository.getTouristSites();
     }
 
@@ -22,5 +24,19 @@ public class PlacesViewModel extends ViewModel {
         return touristSitesData;
     }
 
+    public static class PlacesViewModelFactory implements ViewModelProvider.Factory {
+
+        private PlacesRepository placesRepository;
+
+        public PlacesViewModelFactory(PlacesRepository placesRepository) {
+            this.placesRepository = placesRepository;
+        }
+
+        @NonNull
+        @Override
+        public PlacesViewModel create(@NonNull Class modelClass) {
+            return new PlacesViewModel(placesRepository);
+        }
+    }
 
 }
